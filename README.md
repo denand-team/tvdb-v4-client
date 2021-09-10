@@ -6,11 +6,26 @@ This package is the client for The TVDB V4 API. All docs [are here](https://thet
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via composer. Add it to _"repositories"_ of **composer.json**:
+
+        `{
+            "type": "git",
+            "url": "https://github.com/denand-team/tvdb-v4-client"
+        },`
+
+Then run:
 
 ```bash
 composer require denand/tvdb-v4-client
 ```
+
+Configure it with your auth data. Publish config:
+```bash
+php artisan vendor:publish
+```
+
+And edit inside _config/tvdb-v4-client.php_
+
 
 ## Usage
 
