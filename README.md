@@ -30,8 +30,13 @@ And edit inside _config/tvdb-v4-client.php_
 ## Usage
 
 ```php
-// Usage description here
+$tvdb = new TvdbV4Client();
+$series = $tvdb->getSeries('269586'); // Get Extended data for TV Series
+$search = $tvdb->search('Brooklyn Nine-Nine'); // Search data on TheTVDB
+$search = $tvdb->getSeriesByName('Brooklyn Nine-Nine'); // Search and get Extended Data from TheTVDB
 ```
+
+
 
 ### Testing
 
