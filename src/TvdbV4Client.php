@@ -19,14 +19,193 @@ class TvdbV4Client
      */
     public function __construct()
     {
+        // Auth data
+        $this->pin = config('tvdb-v4-client')['pin'];
+        $this->apikey = config('tvdb-v4-client')['apikey'];
+
+        // Init Guzzle
+        $this->tvdb_api = new Client();
+
+        // Auth tokens
+        $this->headers = [
+            'Authorization' => 'Bearer ' . $this->getToken(),
+            'Accept'        => 'application/json',
+        ];
     }
 
-    public function auth()
+
+    /**
+     * @param $method - Called method
+     * @param $id - ID
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function getData($method, $id, $extended = false)
     {
-        var_dump(config('pin'));
+        // Check if extended needed
+        $ext = ($extended) ? '/extended' : '';
+
+        $data = $this->tvdb_api->get(self::API_URL.$method.'/'.$id.$ext, [
+            'headers' => $this->headers
+        ])->getBody()->getContents();
+
+        $data = json_decode($data);
+
+        return $data->data;
+    }
+
+    /**
+     * @param $id - TheTVDB ID
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeries($id)
+    {
+        return $this->getData('series', $id, true);
+    }
+
+    /**
+     * @param $id - ID of episode on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getEpisodes($id)
+    {
+        return $this->getData('episodes', $id, true);
     }
 
 
+    /**
+     * @param $id - ID of Season on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeasons($id)
+    {
+        return $this->getData('seasons', $id, true);
+    }
+
+    /**
+     * @param $id - ID of Movie on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getMovies($id)
+    {
+        return $this->getData('movies', $id, true);
+    }
+
+    /**
+     * @param $id - ID of Artwork on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getArtwork($id)
+    {
+        return $this->getData('artwork', $id, true);
+    }
+
+    /**
+     * @param $id - ID of Artwork on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getAwards($id)
+    {
+        return $this->getData('awards', $id, true);
+    }
+
+    /**
+     * @param $id - ID of People on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPeople($id)
+    {
+        return $this->getData('people', $id, true);
+    }
 
 
+    /**
+     * @param $id - ID of Characters on TheTVDB
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getCharacters($id)
+    {
+        return $this->getData('characters', $id, false);
+    }
+
+    /**
+     * Search on TheTVDB
+     *
+     * @param string $query - additional search query param string
+     * @param string $type - restrict results to entity type movie|series|person|company
+     * @param number $year - restrict results to a year for movie|series
+     * @param number $offset - offset results
+     * @param number $limit - limit results
+     */
+    public function search($query, $type = null, $year = null, $offset = null, $limit = null)
+    {
+        // Check if extended params needed
+        $type = ($type) ? '&type='.$type : '';
+        $year = ($year) ? '&year='.$year : '';
+        $offset = ($offset) ? '&offset='.$offset : '';
+        $limit = ($limit) ? '&limit='.$limit : '';
+
+
+        $uri = self::API_URL.'search?q='.urlencode($query).$type.$year.$offset.$limit;
+
+        $data = $this->tvdb_api->get($uri, [
+            'headers' => $this->headers
+        ])->getBody()->getContents();
+
+        $data = json_decode($data);
+
+        return $data->data;
+    }
+
+
+    /**
+     * Get TV Series By Name
+     *
+     * @param string $name - TV Series Name
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeriesByName($name)
+    {
+        $found = $this->search($name, 'series', null, null, 1);
+        $data = $this->getSeries($found[0]->tvdb_id);
+
+        return $data;
+    }
+
+
+    /**
+     * Get TheTVDB API V4 Token
+     *
+     * @return string
+     */
+    private function getToken()
+    {
+        $headers = [
+            'apikey' => $this->apikey,
+            'pin'    => $this->pin
+        ];
+
+        $api_url = self::API_URL;
+
+        $tvdbApi = $this->tvdb_api;
+
+        // Retrieve token
+        $token = Cache::remember($this->pin, 2500000, function () use ($headers, $api_url, $tvdbApi) {
+
+            $token = $tvdbApi->post($api_url.'login', ['json' => $headers])->getBody()->getContents();
+
+            return $token;
+        });
+
+        return json_decode($token)->data->token;
+    }
 }
