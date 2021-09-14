@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 class TvdbV4Client
 {
     /**
-     * Стартовый Url API Tvmaze
+     * Url API TVDB API V4
      * @var string
      */
     const API_URL = 'https://api4.thetvdb.com/v4/';
@@ -37,6 +37,7 @@ class TvdbV4Client
     /**
      * @param $method - Called method
      * @param $id - ID
+     * @param bool $extended - use extended data or not
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -46,6 +47,40 @@ class TvdbV4Client
         $ext = ($extended) ? '/extended' : '';
 
         $data = $this->tvdb_api->get(self::API_URL.$method.'/'.$id.$ext, [
+            'headers' => $this->headers
+        ])->getBody()->getContents();
+
+        $data = json_decode($data);
+
+        return $data->data;
+    }
+
+
+    /**
+     * @param $method - Called method
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function getTypeData($method)
+    {
+        $data = $this->tvdb_api->get(self::API_URL.$method.'/types', [
+            'headers' => $this->headers
+        ])->getBody()->getContents();
+
+        $data = json_decode($data);
+
+        return $data->data;
+    }
+
+
+    /**
+     * @param $method - Called method
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function getStatusData($method)
+    {
+        $data = $this->tvdb_api->get(self::API_URL.$method.'/statuses', [
             'headers' => $this->headers
         ])->getBody()->getContents();
 
@@ -179,6 +214,107 @@ class TvdbV4Client
         $data = $this->getSeries($found[0]->tvdb_id);
 
         return $data;
+    }
+
+
+    /**
+     * Get a list of artworkType records
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getArtworkTypes()
+    {
+        return $this->getTypeData('artwork');
+    }
+
+    /**
+     * Get all company type records
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getCompaniesTypes()
+    {
+        return $this->getTypeData('companies');
+    }
+
+    /**
+     * Get the active entity types
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getEntityTypes()
+    {
+        return $this->getTypeData('entities');
+    }
+
+    /**
+     * Get list of peopleType records
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPeopleTypes()
+    {
+        return $this->getTypeData('people');
+    }
+
+    /**
+     * Get season type records
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeasonsTypes()
+    {
+        return $this->getTypeData('seasons');
+    }
+
+    /**
+     * Get list of sourceType records
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSourcesTypes()
+    {
+        return $this->getTypeData('sources');
+    }
+
+    /**
+     * Get list of artwork status records.
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getArtworkStatuses()
+    {
+        return $this->getStatusData('artwork');
+    }
+
+
+    /**
+     * Get list of Movie status records.
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getMoviesStatuses()
+    {
+        return $this->getStatusData('movies');
+    }
+
+    /**
+     * Get list of Series status records.
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeriesStatuses()
+    {
+        return $this->getStatusData('series');
     }
 
 
