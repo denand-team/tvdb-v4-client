@@ -90,6 +90,26 @@ class TvdbV4Client
     }
 
     /**
+     * @param $method - Called method
+     * @param $id - ID
+     * @param bool $extended - use extended data or not
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private function getTranslationsData($method, $id, $lang)
+    {
+        $data = $this->tvdb_api->get(self::API_URL.$method.'/'.$id.'/translations/'.$lang, [
+            'headers' => $this->headers
+        ])->getBody()->getContents();
+
+        $data = json_decode($data);
+
+        return $data->data;
+    }
+
+
+
+    /**
      * @param $id - TheTVDB ID
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -317,6 +337,159 @@ class TvdbV4Client
         return $this->getStatusData('series');
     }
 
+
+    /**
+     * Get Movie Translations records.
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getMoviesTranslations($id, $lang)
+    {
+        return $this->getTranslationsData('movies', $id, $lang = 'eng');
+    }
+
+    /**
+     * Get Series Translations records.
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeriesTranslations($id, $lang)
+    {
+        return $this->getTranslationsData('series', $id, $lang = 'eng');
+    }
+
+
+    /**
+     * Get people translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPeopleTranslations($id, $lang)
+    {
+        return $this->getTranslationsData('people', $id, $lang = 'eng');
+    }
+
+
+    /**
+     * Get seasons translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeasonsTranslations($id, $lang)
+    {
+        return $this->getTranslationsData('seasons', $id, $lang = 'eng');
+    }
+
+    /**
+     * Get episodes translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getEpisodesTranslations($id, $lang)
+    {
+        return $this->getTranslationsData('episodes', $id, $lang = 'eng');
+    }
+
+    /**
+     * Get series extended record + translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeriesFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getSeries($id);
+        $data->translations = $this->getSeriesTranslations($id, $lang);
+
+        return $data;
+    }
+
+    /**
+     * Get seasons extended record + translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeasonsFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getSeasons($id);
+        $data->translations = $this->getSeasonsTranslations($id, $lang);
+
+        return $data;
+    }
+
+
+    /**
+     * Get people extended record + translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPeopleFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getPeople($id);
+        $data->translations = $this->getPeopleTranslations($id, $lang);
+
+        return $data;
+    }
+
+    /**
+     * Get movie extended record + translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getMoviesFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getMovies($id);
+        $data->translations = $this->getMoviesTranslations($id, $lang);
+
+        return $data;
+    }
+
+    /**
+     * Get episodes extended record + translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getEpisodesFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getEpisodes($id);
+        $data->translations = $this->getEpisodesTranslations($id, $lang);
+
+        return $data;
+    }
 
     /**
      * Get TheTVDB API V4 Token
