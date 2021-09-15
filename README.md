@@ -59,13 +59,8 @@ If you discover any security related issues, please email denandteam@gmail.com i
 
 ## Credits
 
--   [DenAnd](https://github.com/denand)
--   [All Contributors](../../contributors)
+-   [DenAnd](https://github.com/denand-team)
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## Laravel Package Boilerplate
-
-This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).
