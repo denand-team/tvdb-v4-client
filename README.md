@@ -1,6 +1,5 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/denand/tvdb-v4-client.svg?style=flat-square)](https://packagist.org/packages/denand/tvdb-v4-client)
 [![Total Downloads](https://img.shields.io/packagist/dt/denand/tvdb-v4-client.svg?style=flat-square)](https://packagist.org/packages/denand/tvdb-v4-client)
-![GitHub Actions](https://github.com/denand/tvdb-v4-client/actions/workflows/main.yml/badge.svg)
 
 This package is the client for The TVDB V4 API. All docs [are here](https://thetvdb.github.io/v4-api/).
 
