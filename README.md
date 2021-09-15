@@ -32,6 +32,8 @@ And edit inside _config/tvdb-v4-client.php_
 ```php
 $tvdb = new TvdbV4Client();
 $series = $tvdb->getSeries('269586'); // Get Extended data for TV Series
+$series = $tvdb->getSeriesTranslations('269586', 'eng'); //  Get Series Translations records.
+$series = $tvdb->getSeriesFull('269586', 'eng'); //  Get Series Translations and extended at once.
 $search = $tvdb->search('Brooklyn Nine-Nine'); // Search data on TheTVDB
 $search = $tvdb->getSeriesByName('Brooklyn Nine-Nine'); // Search and get Extended Data from TheTVDB
 ```
