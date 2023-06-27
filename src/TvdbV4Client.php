@@ -41,12 +41,16 @@ class TvdbV4Client
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function getData($method, $id, $extended = false)
+    private function getData($method, $id, bool $extended = false, $params = [])
     {
         // Check if extended needed
         $ext = ($extended) ? '/extended' : '';
 
-        $data = $this->tvdb_api->get(self::API_URL.$method.'/'.$id.$ext, [
+        $url = self::API_URL . $method . '/' . $id . $ext;
+        if (! empty($params))  {
+            $url .= '?'. http_build_query($params);
+        }
+        $data = $this->tvdb_api->get($url, [
             'headers' => $this->headers
         ])->getBody()->getContents();
 
