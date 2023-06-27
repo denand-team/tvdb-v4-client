@@ -118,9 +118,27 @@ class TvdbV4Client
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getSeries($id)
+    public function getSeries($id, $params = [])
     {
-        return $this->getData('series', $id, true);
+        return $this->getData('series', $id, true, $params);
+    }
+
+    /**
+     * @param $id - TheTVDB ID
+     * @param string $lang
+     * @return \stdClass
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getEpisodesFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getEpisodes($id, [
+            'meta' => 'episodes',
+            'short' => 'false',
+        ]);
+        $data->translations = $this->getEpisodesTranslations($id, $lang);
+
+        return $data;
     }
 
     /**
