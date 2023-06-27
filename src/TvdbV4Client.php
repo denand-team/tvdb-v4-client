@@ -438,7 +438,10 @@ class TvdbV4Client
     public function getSeriesFull ($id, string $lang = 'eng')
     {
         $data = new \stdClass();
-        $data->extended = $this->getSeries($id);
+        $data->extended = $this->getSeries($id, [
+            'meta' => 'episodes',
+            'short' => 'false',
+        ]);
         $data->translations = $this->getSeriesTranslations($id, $lang);
 
         return $data;
@@ -504,14 +507,11 @@ class TvdbV4Client
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getSeriesFull ($id, string $lang = 'eng')
+     public function getEpisodesFull ($id, string $lang = 'eng')
     {
         $data = new \stdClass();
-        $data->extended = $this->getSeries($id, [
-            'meta' => 'episodes',
-            'short' => 'false',
-        ]);
-        $data->translations = $this->getSeriesTranslations($id, $lang);
+        $data->extended = $this->getEpisodes($id);
+        $data->translations = $this->getEpisodesTranslations($id, $lang);
 
         return $data;
     }
