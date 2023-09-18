@@ -497,26 +497,6 @@ class TvdbV4Client
     }
 
     /**
-     * Get episodes extended record + translation record
-     *
-     * @param string $id - ID on TheTVDB
-     * @param string $lang - Translation language, eng default
-     * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getSeriesFull ($id, string $lang = 'eng')
-    {
-        $data = new \stdClass();
-        $data->extended = $this->getSeries($id, [
-            'meta' => 'episodes',
-            'short' => 'false',
-        ]);
-        $data->translations = $this->getSeriesTranslations($id, $lang);
-
-        return $data;
-    }
-
-    /**
      * Get TheTVDB API V4 Token
      *
      * @return string
