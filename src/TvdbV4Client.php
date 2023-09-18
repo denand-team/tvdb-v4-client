@@ -132,7 +132,10 @@ class TvdbV4Client
     public function getEpisodesFull ($id, string $lang = 'eng')
     {
         $data = new \stdClass();
-        $data->extended = $this->getEpisodes($id);
+        $data->extended = $this->getEpisodes($id, [
+            'meta' => 'episodes',
+            'short' => 'false',
+        ]);
         $data->translations = $this->getEpisodesTranslations($id, $lang);
 
         return $data;
@@ -435,10 +438,7 @@ class TvdbV4Client
     public function getSeriesFull ($id, string $lang = 'eng')
     {
         $data = new \stdClass();
-        $data->extended = $this->getSeries($id, [
-            'meta' => 'episodes',
-            'short' => 'false',
-        ]);
+        $data->extended = $this->getSeries($id);
         $data->translations = $this->getSeriesTranslations($id, $lang);
 
         return $data;
@@ -492,6 +492,26 @@ class TvdbV4Client
         $data = new \stdClass();
         $data->extended = $this->getMovies($id);
         $data->translations = $this->getMoviesTranslations($id, $lang);
+
+        return $data;
+    }
+
+    /**
+     * Get episodes extended record + translation record
+     *
+     * @param string $id - ID on TheTVDB
+     * @param string $lang - Translation language, eng default
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getSeriesFull ($id, string $lang = 'eng')
+    {
+        $data = new \stdClass();
+        $data->extended = $this->getSeries($id, [
+            'meta' => 'episodes',
+            'short' => 'false',
+        ]);
+        $data->translations = $this->getSeriesTranslations($id, $lang);
 
         return $data;
     }
