@@ -2,5 +2,8 @@
 /src/public/storage
 /vendor
 .env
+.env.testing
+.phpunit.result.cache
 .idea
 .github
+composer.lock
