@@ -1,5 +1,7 @@
 /src/node_modules
 /src/public/storage
+coverage-report/
+coverage.xml
 /vendor
 .env
 .env.testing
